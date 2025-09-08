@@ -1,19 +1,9 @@
 import { Router } from "express";
-import authModel from "../models/auth.model.js"; 
+import { registerUser } from "../controllers/auth.controller.js";
 
 const authRouter = Router()
 
-authRouter.post("/register", async (req, res) => {
-    const {name, password, email} = req.body;
-    const userExist = await authModel.findOne({email});
-
-    if (userExist){
-        return res.status(400).json({message: `User already esist with ${email} email address.`});
-    }
-    const newUser = await authModel.insertOne({name, email, password});
-    res.status(200).json({...newUser._doc});
-})
-
+authRouter.post("/register", registerUser)
 
 authRouter.post("/login", async (req, res) => {
     res.send({message: "Called sign-in route"});
