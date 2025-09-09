@@ -3,6 +3,7 @@ import { PORT } from "./config/env.js";
 import authRouter from "./routes/auth.routes.js";
 import userRouter from "./routes/user.routes.js";
 import connectToDatabase from "./database/database.js";
+import errorMiddleware from "./middlewares/error.middleware.js"
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use("/auth", authRouter)
 app.use("/users", userRouter)
 
+app.use(errorMiddleware)
 
 app.get("/", (req, res) => {
     res.send("Hello world!")

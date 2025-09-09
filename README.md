@@ -44,4 +44,3 @@ npx eslint --init
     - `GET /subscriptions/me` → Get the logged-in user’s subscription(s).
     - `PATCH /subscriptions/:id/cancel` → Cancel an active subscription.
     - `GET /subscriptions/status` → Check if the user has an active subscription.
-    - `GET /subscriptions/status` → Check if the user has an active subscription..
