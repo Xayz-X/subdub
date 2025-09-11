@@ -83,4 +83,46 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-export { registerNewUser, loginUser };
+const refreshToken = async (req, res, next) => {
+  try {
+    let token;
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith(`Bearer`)
+    ) {
+      token = req.headers.authorization.split(" ")[1];
+    }
+    if (!token) {
+      res.status(401).json({
+        success: false,
+        message: `Not authorized`,
+        error: `Token is not available in the headers`,
+      });
+    }
+
+    // ignore token expiry date, as it is a refresh token request the old token maybe expired
+    const decoded = jwt.verify(token, JWT_SECRET, { ignoreExpiration: true });
+
+    // JWT is valid but maybe user deleted from database, to check that get the user from database
+    const user = await authModel.findById(decoded.userId);
+    if (!user) {
+      res.status(401).json({
+        success: false,
+        message: `Not authorized`,
+        error: `User does not exist`,
+      });
+    }
+    // Generate new JWT token
+    const newToken = jwt.sign({ userId: user._id }, JWT_SECRET, {
+      expiresIn: JWT_EXPIRES_IN,
+    });
+    res.status(200).json({
+      success: true,
+      token: newToken,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { registerNewUser, loginUser, refreshToken };
