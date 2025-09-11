@@ -59,3 +59,19 @@ export const updateUser = async (req, res, next) => {
     next(error);
   }
 };
+
+export const deleteUser = async (req, res, next) => {
+  try {
+    // ("");
+    const deletedUser = await authModel.findByIdAndDelete(req.user._id);
+    console.log(deletedUser);
+
+    res.status(200).json({
+      success: true,
+      message: "User has been deleted successfully",
+      userId: req.user._id,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

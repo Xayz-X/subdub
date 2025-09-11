@@ -12,7 +12,7 @@ const authorize = async (req, res, next) => {
       token = req.headers.authorization.split(" ")[1];
     }
     if (!token) {
-      res.status(401).json({
+      return res.status(401).json({
         success: false,
         message: `Not authorized`,
         error: `Token is not available in the headers`,
@@ -23,7 +23,7 @@ const authorize = async (req, res, next) => {
     const user = await authModel.findById(decoded.userId);
 
     if (!user) {
-      res.status(401).json({
+      return res.status(401).json({
         success: false,
         message: `Not authorized`,
         error: `User does not exist`,
