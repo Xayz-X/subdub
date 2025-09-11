@@ -1,3 +1,4 @@
+import bcrypt from "bcryptjs";
 import authModel from "../models/auth.model.js";
 
 export const getUsers = async (req, res, next) => {
@@ -15,8 +16,7 @@ export const getUsers = async (req, res, next) => {
 
 export const getUser = async (req, res, next) => {
   try {
-    const user = await authModel.findById(req.params.id).select("-password");
-    if (!user) {
+    if (!req.user) {
       const error = new Error(`User not found`);
       error.statusCode = 404;
       throw error;
@@ -24,7 +24,36 @@ export const getUser = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      data: user,
+      data: req.user,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateUser = async (req, res, next) => {
+  try {
+    let hashedPassword;
+    const { name, email, password } = req.body;
+
+    if (password) {
+      const salt = await bcrypt.genSalt();
+      hashedPassword = await bcrypt.hash(password, salt);
+    }
+
+    await authModel.updateOne(
+      { _id: req.user._id },
+      {
+        name: name || req.user.name,
+        email: email || req.user.email,
+        password: hashedPassword || req.user.password,
+      }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "User has been updated successfully",
+      userId: req.user._id,
     });
   } catch (error) {
     next(error);
