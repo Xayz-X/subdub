@@ -70,10 +70,9 @@ export const updateUser = async (req, res, next) => {
 
 export const deleteUser = async (req, res, next) => {
   try {
-    // ("");
-    const deletedUser = await authModel.findByIdAndDelete(req.user._id);
-    console.log(deletedUser);
-
+    await authModel.findByIdAndDelete(req.user._id);
+    // we dont need any checks here that user deleted or not
+    // bcz if user deleted cant send same req, as it will go through authorize middleware first
     res.status(200).json({
       success: true,
       message: "User has been deleted successfully",
