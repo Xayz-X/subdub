@@ -1,5 +1,7 @@
 import { Router } from "express";
 import authorize from "../middlewares/auth.middleware.js";
+import { adminMiddleware } from "../middlewares/role.middleware.js";
+
 import {
   getUser,
   getUsers,
@@ -9,8 +11,8 @@ import {
 
 const userRouter = Router();
 
-userRouter.get("/", getUsers); // need admin role; not implemented role base system yet
-userRouter.get("/:id", getUser); // need admin role; not implemented role base system yet
+userRouter.get("/", authorize, adminMiddleware, getUsers);
+userRouter.get("/:id", authorize, adminMiddleware, getUser);
 userRouter.get("/me", authorize, getUser);
 userRouter.patch("/me", authorize, updateUser);
 userRouter.delete("/me", authorize, deleteUser);

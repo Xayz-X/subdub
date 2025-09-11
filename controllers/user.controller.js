@@ -15,16 +15,24 @@ export const getUsers = async (req, res, next) => {
 };
 
 export const getUser = async (req, res, next) => {
+  let loggedInUser = req.user;
   try {
-    if (!req.user) {
-      const error = new Error(`User not found`);
-      error.statusCode = 404;
-      throw error;
+    const userId = req.params.id || loggedInUser._id;
+    if (userId != loggedInUser._id) {
+      // we have to fetch the user from database, it's a admin reqested for a user.
+      loggedInUser = await authModel.findById(req.params.id);
     }
-
+    if (!loggedInUser) {
+      // mns we did not get the user from database maybe invalid id
+      return res.status(404).json({
+        success: false,
+        message: "Not Found",
+        error: "User not found",
+      });
+    }
     res.status(200).json({
       success: true,
-      data: req.user,
+      data: loggedInUser,
     });
   } catch (error) {
     next(error);
