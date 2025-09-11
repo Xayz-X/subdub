@@ -1,13 +1,11 @@
 import { Router } from "express";
-import { registerUser } from "../controllers/auth.controller.js";
+import { registerNewUser, loginUser } from "../controllers/auth.controller.js";
 
 const authRouter = Router()
 
-authRouter.post("/register", registerUser)
+authRouter.post("/register", registerNewUser)
 
-authRouter.post("/login", async (req, res) => {
-    res.send({message: "Called sign-in route"});
-})
+authRouter.post("/login", loginUser)
 
 authRouter.post("/logout",async (req, res) => {
     res.send({message: "Called sign-out route"});
