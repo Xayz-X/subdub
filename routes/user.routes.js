@@ -10,6 +10,7 @@ import {
 const userRouter = Router();
 
 userRouter.get("/", getUsers); // need admin role; not implemented role base system yet
+userRouter.get("/:id", getUser); // need admin role; not implemented role base system yet
 userRouter.get("/me", authorize, getUser);
 userRouter.patch("/me", authorize, updateUser);
 userRouter.delete("/me", authorize, deleteUser);
